@@ -159,14 +159,6 @@ venv.bak/
 .mypy_cache/
 
 .idea/
-constants.py
-files/
-forms.py
-mitmproxy_monitor.py
-requirements.txt
-server.py
-templates/
-util.py
 .idea/codeStyles/
 .idea/design_project.iml
 .idea/misc.xml
