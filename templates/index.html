@@ -127,9 +127,11 @@
     };
 
     const urlParams = new URLSearchParams(window.location.search);
-
-    if (urlParams.get('start') !== undefined) {
+    if (urlParams.get('start') !== null) {
         Clock.start();
+    }
+    else {
+        Clock.pause();
     }
 </script>
 </body>
