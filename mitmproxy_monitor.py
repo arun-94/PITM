@@ -4,6 +4,7 @@ from mitmproxy import ctx
 from profanityfilter import ProfanityFilter
 from constants import FILE_WEBSITE_VISITED, FILE_WHITELIST, FILE_BLACKLIST, FILE_PROFANITY_BLOCKLIST
 from urllib.parse import urlparse
+from analyze import analyze_page
 
 import json
 
@@ -13,6 +14,30 @@ class Events:
         """The full HTTP request has been read."""
         client_ip = flow.client_conn.ip_address[0].split(':')[-1]
         url = urlparse(flow.request.url)
+
+        base_url = "%s://%s" % (url.scheme, url.netloc)
+        data = analyze_page(str(base_url))
+        if data:
+            score = {text.replace('\\', ''): score
+                     for text, score in data
+                     if text}
+
+            existing_json = {}
+            with open('files/words.json', 'r') as f:
+                try:
+                    existing_json = json.load(f)
+                except ValueError:
+                    existing_json = {}
+
+            with open('files/words.json', 'w') as f:
+                for text, val in score.items():
+                    if text in existing_json:
+                        existing_json[text] = (existing_json[text] + val) // 2
+                    else:
+                        existing_json[text] = val
+
+                json.dump(existing_json, f)
+
         base_url = "%s://%s" % (url.scheme, url.netloc)
 
         json_data = None

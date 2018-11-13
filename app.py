@@ -33,6 +33,17 @@ def index():
     return render_template('index.html', form=form, websites_visited=websites_visited)
 
 
+@app.route('/visualize')
+def visualize():
+    data = {}
+    with open('files/words.json', 'r') as f:
+        data = json.load(f)
+        data = [{"text": key, "size": val}
+                for key, val in data.items()]
+
+    return render_template('visualize.html', data=data)
+
+
 @app.route('/submit', methods=['POST'])
 def submit():
     add_text_to_file(request.form['bannedWords'], BANNED_WORDS_FILE)
@@ -65,6 +76,9 @@ def stop():
         f.close()
 
     with open(FILE_WEBSITE_VISITED, 'w') as f:
+        f.write("{}")
+
+    with open('files/words.json', 'w') as f:
         f.write("{}")
 
     return redirect(url_for('index', stop="yes"))

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Word Cloud</title>
+</head>
+<body>
+
+<h2>Word Cloud</h2>
+
+<div id="wordcloud">
+
+</div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='d3.layout.cloud.js') }}"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script rel="text/javascript">
+    var frequency_list = {{ data|safe }};
+    console.log(frequency_list);
+    // console.log(frequency_list);
+
+    var color = d3.scaleLinear()
+            .domain([10,20,30,40,50,60,100,150,200,1000])
+            .range(["#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+
+    d3.layout.cloud().size([850, 300])
+            .words(frequency_list)
+            .rotate(0)
+            .font("Impact")
+            .fontSize(function(d) { return d.size; })
+            .on("end", draw)
+            .start();
+
+    function draw(words) {
+        d3.select("#wordcloud").append("svg")
+                .attr("width", 800)
+                .attr("height", 350)
+                .attr("class", "wordcloud")
+                .append("g")
+                // without the transform, words words would get cutoff to the left and top, they would
+                // appear outside of the SVG area
+                .attr("transform", "translate(320,200)")
+                .selectAll("text")
+                .data(words)
+                .enter().append("text")
+                .style("font-size", function(d) { return d.size + "px"; })
+                .style("fill", function(d, i) { return color(i); })
+                .attr("transform", function(d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .text(function(d) { return d.text; });
+    }
+
+</script>
+</body>
+</html>
