@@ -1,6 +1,6 @@
 Flask==1.0.2
 Flask-WTF==0.14.2
-Jinja2==2.10
+Jinja2==2.11.3
 profanityfilter==2.0.4
 requests==2.20.0
 urllib3==1.24
