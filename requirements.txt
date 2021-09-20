@@ -9,4 +9,4 @@ WTForms==2.2.1
 nltk==3.3
 stop-words==2018.7.23
 beautifulsoup4==4.6.3
-mitmproxy==4.0.4
+mitmproxy==7.0.3
